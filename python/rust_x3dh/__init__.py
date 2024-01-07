@@ -1,4 +1,4 @@
-from .x3dh import *
+from .rust_x3dh import *
 
 class _X3DHSer:
     def __init__(self): pass
