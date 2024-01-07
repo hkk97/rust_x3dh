@@ -1,4 +1,4 @@
-# X3DH
+# RustX3DH
 
 Embeded the [xxxdh](https://github.com/alexyer/xxxdh/tree/master), which iplementation of the Extended Triple Diffie-Hellman key exchange protocol written in Rust, on Python. [xxxdh](https://github.com/alexyer/xxxdh/tree/master) is written by [Olexander Yermakov](https://github.com/alexyer).
 
