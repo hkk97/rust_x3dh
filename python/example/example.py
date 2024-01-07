@@ -1,4 +1,4 @@
-from x3dh import x3dh_ser
+from rustx3dh import x3dh_ser
 
 u1_shared_secret_key, u2_shared_secret_key = x3dh_ser.gen_3xdh_secrets_key_pairs()
 
