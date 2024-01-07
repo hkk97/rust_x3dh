@@ -73,8 +73,6 @@ docs/_build/
 .python-version
 
 # Rust files
-*.rs
-*.toml
 Cargo.lock
 
 # Rust target directory
