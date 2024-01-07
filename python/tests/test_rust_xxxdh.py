@@ -1,5 +1,5 @@
 import unittest
-from rustx3dh import x3dh_ser
+from rust_x3dh import x3dh_ser
 
 class X3DHTest(unittest.TestCase):
     def test_shared_secret_keys(self):

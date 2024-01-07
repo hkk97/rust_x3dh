@@ -76,7 +76,7 @@ fn generate_3xdh_secrets_key_pairs() -> (Vec<u8>, Vec<u8>) {
 /// the `lib.name` setting in thePOE `Cargo.toml`, else Python will not be able to
 /// import the module.
 #[pymodule]
-fn rustx3dh(_py: Python<'_>, m: &PyModule) -> PyResult<()> {
+fn rust_x3dh(_py: Python<'_>, m: &PyModule) -> PyResult<()> {
     m.add_function(wrap_pyfunction!(generate_3xdh_secrets_key_pairs, m)?)?;
     Ok(())
 }

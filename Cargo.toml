@@ -1,5 +1,5 @@
 [package]
-name = "rustx3dh"
+name = "rust_x3dh"
 version = "0.0.1"
 edition = "2021"
 categories = ["cryptography"]
@@ -9,7 +9,7 @@ description = "Embeded the xxxdh, which iplementation of the Extended Triple Dif
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 [lib]
-name = "rustx3dh"
+name = "rust_x3dh"
 crate-type = ["cdylib"]
 
 [dependencies]
