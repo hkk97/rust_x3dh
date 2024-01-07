@@ -1,6 +1,6 @@
 [package]
 name = "rust_x3dh"
-version = "0.0.1"
+version = "0.0.2"
 edition = "2021"
 categories = ["cryptography"]
 keywords = ["crypto", "cryptography", "x3dh"]
