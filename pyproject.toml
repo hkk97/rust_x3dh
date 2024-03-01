@@ -1,30 +1,37 @@
 [build-system]
-requires = ["maturin>=1.4,<2.0"]
 build-backend = "maturin"
+requires = ["maturin>=1.0,<2.0"]
 
 [project]
 name = "rust_x3dh"
-version = "0.0.3"
+version = "0.0.8"
 license = "MIT"
 zip_safe = false
 authors = [ { name="Klaus Wong", email="wch.klaus@gmail.com" },]
 description = "Embeded the xxxdh, which iplementation of the Extended Triple Diffie-Hellman key exchange protocol written in Rust, on Python. xxxdh is written by Olexander Yermakov."
 readme  = "README.md"
-requires-python = ">=3.8"
+requires-python = ">=3.9"
 classifiers = [
     "Intended Audience :: Developers",
     "License :: OSI Approved :: MIT License",
+    "Operating System :: MacOS",
+    "Operating System :: Microsoft :: Windows",
+    "Operating System :: POSIX :: Linux",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python",
     "Programming Language :: Rust",
-    "Programming Language :: Python :: 3",
     "Programming Language :: Python :: Implementation :: CPython",
     "Programming Language :: Python :: Implementation :: PyPy",
 ]
-[project.optional-dependencies]
 
 [tool.maturin]
 python-source = "python"
 features = ["pyo3/extension-module"]
-
+include = [
+    { format = "sdist", path = ".cargo/*" },
+    { format = "sdist", path = "Cargo.lock" },
+    { format = "sdist", path = "include/**/*" },
+]
 
 [project.urls]
 Homepage = "https://github.com/hkk97/rust_x3dh"
