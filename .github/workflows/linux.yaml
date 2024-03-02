@@ -76,6 +76,12 @@ jobs:
           python-version: "3.9"
       - run: python -m pip install --upgrade pip
       - run: pip install "maturin>=1,<2"
+      - run: maturin publish --skip-existing --username "${{ secrets.PYPI_USER_NAME }}" wheel
+        env:
+          MATURIN_PYPI_TOKEN: ${{ secrets.PYPI_TOKEN }}
+      - run: maturin publish --skip-existing --username "${{ secrets.PYPI_USER_NAME }}" --target python${{ matrix.python.version }}
+        env:
+          MATURIN_PYPI_TOKEN: ${{ secrets.PYPI_TOKEN }}
       - run: maturin upload --skip-existing --username "${{ secrets.PYPI_USER_NAME }}" wheel
         env:
           MATURIN_PYPI_TOKEN: ${{ secrets.PYPI_TOKEN }}
