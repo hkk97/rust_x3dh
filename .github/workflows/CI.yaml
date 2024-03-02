@@ -1,4 +1,4 @@
-name: linux
+name: CI
 
 on:
   push:
@@ -7,34 +7,65 @@ on:
 
 jobs:
 
-  sdist:
-    runs-on: ubuntu-22.04
+  windows:
+    runs-on: windows-latest
     strategy:
-      fail-fast: false
-    env:
-      RUST_TOOLCHAIN: "1.72" # MSRV
+      matrix:
+        target: [x64, x86]
     steps:
-    - run: curl https://sh.rustup.rs -sSf | sh -s -- --default-toolchain $RUST_TOOLCHAIN -y
-    - run: rustup default $RUST_TOOLCHAIN
-
-    - uses: actions/checkout@v4
-
-    - run: python3 -m pip install --user --upgrade pip "maturin>=1,<2" wheel
-
-    - run: maturin build
-    - run: maturin sdist --out=dist
-
-    - run: python3 -m pip install --user dist/rust_x3dh*.tar.gz
-      env:
-        CARGO_NET_OFFLINE: "true"
-        
-    - name: Store sdist
-      if: "startsWith(github.ref, 'refs/tags/')"
-      uses: actions/upload-artifact@v3
-      with:
-        name: wheels
-        path: dist
-        retention-days: 1
+      - uses: actions/checkout@v3
+      - uses: actions/setup-python@v4
+        with:
+          python-version: "3.10"
+          architecture: ${{ matrix.target }}
+      - name: Build wheels
+        uses: PyO3/maturin-action@v1
+        with:
+          target: ${{ matrix.target }}
+          args: --release --out dist --find-interpreter
+          sccache: "true"
+      - name: Upload wheels
+        uses: actions/upload-artifact@v3
+        with:
+          name: wheels
+          path: dist
+          
+  macos:
+    runs-on: macos-latest
+    strategy:
+      matrix:
+        target: [x86_64, aarch64]
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-python@v4
+        with:
+          python-version: "3.10"
+      - name: Build wheels
+        uses: PyO3/maturin-action@v1
+        with:
+          target: ${{ matrix.target }}
+          args: --release --out dist --find-interpreter
+          sccache: "true"
+      - name: Upload wheels
+        uses: actions/upload-artifact@v3
+        with:
+          name: wheels
+          path: dist
+          
+  sdist:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Build sdist
+        uses: PyO3/maturin-action@v1
+        with:
+          command: sdist
+          args: --out dist
+      - name: Upload sdist
+        uses: actions/upload-artifact@v3
+        with:
+          name: wheels
+          path: dist
         
   musllinux_1_2:
     runs-on: ubuntu-22.04
@@ -96,7 +127,7 @@ jobs:
       contents: write
     runs-on: ubuntu-22.04
     if: "startsWith(github.ref, 'refs/tags/')"
-    needs: [musllinux_1_2, sdist ]
+    needs: [ windows, macos, musllinux_1_2, sdist ]
     steps:
       - uses: actions/download-artifact@v3
         with:
