@@ -94,7 +94,7 @@ jobs:
       contents: write
     runs-on: ubuntu-22.04
     if: "startsWith(github.ref, 'refs/tags/')"
-    needs: [ manylinux_2_17_amd64, manylinux_2_17_non_amd64, musllinux_1_2, sdist ]
+    needs: [ musllinux_1_2, sdist ]
     steps:
       - uses: actions/download-artifact@v3
         with:
