@@ -26,7 +26,7 @@ jobs:
 
       - run: maturin sdist --out=dist
 
-      - run: python3 -m pip install --user dist/rust_x3dh*.tar.gz
+      - run: python3 -m pip install --user dist/*.tar.gz
         env:
           CARGO_NET_OFFLINE: "true"
         
@@ -103,16 +103,14 @@ jobs:
       - uses: actions/download-artifact@v3
         with:
           name: wheels
-      - uses: actions/setup-python@v5
+      - uses: actions/setup-python@v2
         with:
-          python-version: "3.11"
-      - run: pip install pip "maturin>=1,<2"
-      - run: ls -1 .
-      - name: deploy wheel
-        run: maturin upload --skip-existing --username "${{ secrets.PYPI_USER_NAME }}" *.whl
+          python-version: "3.9"
+      - run: python -m pip install --upgrade pip
+      - run: pip install "maturin>=1,<2"
+      - run: maturin publish --skip-existing --username "${{ secrets.PYPI_USER_NAME }}" wheel
         env:
           MATURIN_PYPI_TOKEN: ${{ secrets.PYPI_TOKEN }}
-      - name: deploy sdist
-        run: maturin upload --skip-existing --username "${{ secrets.PYPI_USER_NAME }}" *.tar.gz
+      - run: maturin publish --skip-existing --username "${{ secrets.PYPI_USER_NAME }}" --target python${{ matrix.python.version }}
         env:
           MATURIN_PYPI_TOKEN: ${{ secrets.PYPI_TOKEN }}
