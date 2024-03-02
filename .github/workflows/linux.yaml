@@ -6,6 +6,52 @@ on:
       - '*'
 
 jobs:
+
+  sdist:
+    runs-on: ubuntu-22.04
+    strategy:
+      fail-fast: false
+    env:
+      RUST_TOOLCHAIN: "1.72" # MSRV
+    steps:
+    - run: curl https://sh.rustup.rs -sSf | sh -s -- --default-toolchain $RUST_TOOLCHAIN -y
+    - run: rustup default $RUST_TOOLCHAIN
+
+    - uses: actions/checkout@v4
+
+    - run: python3 -m pip install --user --upgrade pip "maturin>=1,<2" wheel
+
+    - run: maturin build
+    - run: cargo fetch
+    - run: mkdir .cargo
+    - run: cp ci/sdist.toml .cargo/config.toml
+    - run: cargo vendor include/cargo --versioned-dirs
+
+    - run: maturin sdist --out=dist
+
+    - run: python3 -m pip install --user dist/orjson*.tar.gz
+      env:
+        CARGO_NET_OFFLINE: "true"
+
+    - run: python3 -m pip install --user -r test/requirements.txt -r integration/requirements.txt mypy
+
+    - run: pytest -s -rxX -v test
+      env:
+        PYTHONMALLOC: "debug"
+
+    - run: ./integration/run thread
+    - run: ./integration/run http
+    - run: ./integration/run init
+    - run: ./integration/run typestubs
+
+    - name: Store sdist
+      if: "startsWith(github.ref, 'refs/tags/')"
+      uses: actions/upload-artifact@v3
+      with:
+        name: wheels
+        path: dist
+        retention-days: 1
+        
   musllinux_1_2:
     runs-on: ubuntu-22.04
     strategy:
@@ -66,7 +112,7 @@ jobs:
       contents: write
     runs-on: ubuntu-22.04
     if: "startsWith(github.ref, 'refs/tags/')"
-    needs: [musllinux_1_2]
+    needs: [musllinux_1_2, sdist ]
     steps:
       - uses: actions/download-artifact@v3
         with:
