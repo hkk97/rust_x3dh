@@ -29,7 +29,7 @@ jobs:
 
     - run: maturin sdist --out=dist
 
-    - run: python3 -m pip install --user dist/orjson*.tar.gz
+    - run: python3 -m pip install --user dist/rust_x3dh*.tar.gz
       env:
         CARGO_NET_OFFLINE: "true"
 
